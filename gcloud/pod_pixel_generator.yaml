@@ -1,0 +1,11 @@
+kind: Pod
+metadata:
+  name: pixel_generator
+  namespace: default
+spec:
+  containers:
+  - image: gcr.io/kubetest-180915/node
+    name: app
+    ports:
+    - containerPort: 3000
+  restartPolicy: Always
