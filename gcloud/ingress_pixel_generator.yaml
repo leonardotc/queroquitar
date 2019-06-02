@@ -1,0 +1,9 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: queroquitar-elb
+  namespace: default
+spec:
+  backend:
+    serviceName: pixel-generator
+    servicePort: 80
