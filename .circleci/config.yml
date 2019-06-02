@@ -20,6 +20,8 @@ jobs:
     working_directory: /go/src/github.com/leonardotc/queroquitar
     steps:
       - checkout
+      - run: pwd
+      - run: ls -la
       - run: ./deploy.sh
   
   deploy:
