@@ -3,7 +3,7 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
 jobs:
-  build:
+  compile:
     docker:
       # specify the version
       - image: circleci/golang:1.9
@@ -20,14 +20,33 @@ jobs:
     working_directory: /go/src/github.com/leonardotc/queroquitar
     steps:
       - checkout
-      - run: ./deploy.sh
-  
+      - run: ./release.sh
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
   deploy:
-    docker:
-      - image: google/cloud-sdk
+    machine: true
     steps:
-      - checkout
-
-      # specify any bash command here prefixed with `run: `
-      - run: docker build 
-      - run: cat kubetest-180915-639d2d46564d.json | docker login -u 645719532146-compute@developer.gserviceaccount.com --password-stdin https://kubetest-180915
+      - attach_workspace:
+          at: .
+      - run: pwd
+      - run: ls -la
+      - run: docker build . -t gcr.io/kubetest-180915/queroquitar
+      - run: echo $GCLOUD_SERVICE_KEY > kubetest-180915.json
+      - run: gcloud auth activate-service-account --key-file kubetest-180915.json
+      - run: sudo gcloud docker -- push gcr.io/kubetest-180915/queroquitar
+      - run: curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl
+      - run: sudo chmod a+x kubectl
+      - run: sudo mv kubectl /sbin/
+      - run: gcloud config set project kubetest-180915
+      - run: gcloud container clusters get-credentials standard-cluster-1 --zone us-east1-c --project kubetest-180915
+      - run: kubectl set image deployment/pixel-generator app=gcr.io/kubetest-180915/queroquitar
+workflows:
+  version: 2
+  build_deploy:
+    jobs:
+    - compile
+    - deploy:
+        requires:
+          - compile

@@ -16,7 +16,8 @@ spec:
       nodeSelector:
         worker: micro
       containers:
-      - image: gcr.io/kubetest-180915/queroquitar
+      - image: gcr.io/kubetest-180915/queroquitar:latest
+        imagePullPolicy: "Always"
         name: app
         ports:
         - containerPort: 3000
