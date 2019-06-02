@@ -1,5 +1,5 @@
-FROM launcher.gcr.io/google/nodejs
+FROM ubuntu:latest
 
-RUN npm install
+COPY . /app
 
-CMD npm run start
+CMD ["/app/bin/app"]

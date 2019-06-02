@@ -1,11 +1,27 @@
-kind: Pod
+apiVersion: apps/v1beta1
+kind: Deployment
 metadata:
-  name: pixel_generator
+  name: pixel-generator
   namespace: default
 spec:
-  containers:
-  - image: gcr.io/kubetest-180915/node
-    name: app
-    ports:
-    - containerPort: 3000
-  restartPolicy: Always
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 50%
+  template:
+    metadata:
+      labels:
+        app: micro
+    spec:
+      nodeSelector:
+        worker: micro
+      containers:
+      - image: gcr.io/kubetest-180915/queroquitar
+        name: app
+        ports:
+        - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+      restartPolicy: Always
