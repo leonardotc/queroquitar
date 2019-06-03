@@ -1,5 +1,3 @@
 #!/bin/bash
 
-export GOPATH=$PWD
-
-go install app
+go install pixelify
