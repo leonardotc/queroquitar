@@ -10,7 +10,7 @@ import (
 )
 
 const Opaque = 0xff
-const PixelSize = 25
+const PixelSize = 10
 const AnimationFrames = 5
 
 func generateGif(f io.Writer) {
