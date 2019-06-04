@@ -1,4 +1,4 @@
-package pixelify
+package main
 
 import (
 	"math/rand"
@@ -9,11 +9,15 @@ import (
 	"image/color/palette"
 )
 
+const Opaque = 0xff
+const PixelSize = 25
+const AnimationFrames = 5
+
 func generateGif(f io.Writer) {
 	var images []*image.Paletted
 	var delays []int
 
-	for i := 0; i < 5; i++ {
+	for frameIndex := 0; frameIndex < AnimationFrames; frameIndex++ {
 		images = append(images, generatePixels(250, 250))
 		delays = append(delays, 1)
 	}
@@ -29,12 +33,12 @@ func generatePixels(width int, height int)*image.Paletted {
 		Max: image.Pt(width, height)}
 	image := image.NewPaletted(rect, palette.Plan9)
 
-	for x := 0; x < width / 25; x++ {
-		for y := 0; y < height / 25; y++ {
+	for x := 0; x < width / PixelSize; x++ {
+		for y := 0; y < height / PixelSize; y++ {
 			color := generateColor()
-			for i := 0; i < 25; i++ {
-				for j := 0; j < 25; j++ {
-					image.Set(x * 25 + i, y * 25 + j, color)
+			for offsetX := 0; offsetX < PixelSize; offsetX++ {
+				for offsetY := 0; offsetY < PixelSize; offsetY++ {
+					image.Set(x * PixelSize + offsetX, y * PixelSize + offsetY, color)
 				}
 			}
 		}
@@ -51,6 +55,6 @@ func generateColor()color.NRGBA {
 		R: rgb[0],
 		G: rgb[1],
 		B: rgb[2],
-		A: 0xff,
+		A: Opaque,
 	}
 }

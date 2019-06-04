@@ -21,10 +21,11 @@ jobs:
     steps:
       - checkout
       - run: ./release.sh
+      - run: mv Dockerfile $GOPATH/bin
       - persist_to_workspace:
           root: .
           paths:
-            - .
+            - $GOPATH/bin
   deploy:
     machine: true
     steps:

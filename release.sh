@@ -1,3 +1,4 @@
 #!/bin/bash
 
-go install pixelify
+cd $GOPATH
+go install
