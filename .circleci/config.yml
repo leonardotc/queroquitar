@@ -41,6 +41,8 @@ jobs:
       - run: gcloud config set project kubetest-180915
       - run: gcloud container clusters get-credentials standard-cluster-1 --zone us-east1-c --project kubetest-180915
       - run: kubectl set image deployment/pixel-generator app=gcr.io/kubetest-180915/queroquitar:latest
+      - run: kubectl set image deployment/pixel-generator app=gcr.io/kubetest-180915/queroquitar
+      - run: kubectl rollout status deployment/pixel-generator
 workflows:
   version: 2
   build_deploy:
