@@ -1,4 +1,3 @@
 #!/bin/bash
 
-cd $GOPATH
-go install pixelify
+go install queroquitar/pixelify
