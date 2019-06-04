@@ -3,6 +3,14 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
 jobs:
+  test:
+    docker:
+      - image: circleci/golang:1.9
+    ####   DO NOT CHANGE THIS DIRECTORY ELSE NOTHING WILL WORK DUE TO THE GOLANG workspace dyanmic
+    working_directory: /go/src/queroquitar
+    steps:
+      - checkout
+      - run: go test queroquitar/pixelify
   compile:
     docker:
       - image: circleci/golang:1.9
@@ -23,8 +31,6 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - run: pwd
-      - run: ls -la
       - run: docker build . -t gcr.io/kubetest-180915/queroquitar
       - run: echo $GCLOUD_SERVICE_KEY > kubetest-180915.json
       - run: gcloud auth activate-service-account --key-file kubetest-180915.json
@@ -39,7 +45,10 @@ workflows:
   version: 2
   build_deploy:
     jobs:
-    - compile
+    - test
+    - compile:
+        requires:
+          - test
     - deploy:
         requires:
           - compile
